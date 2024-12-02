@@ -24,8 +24,9 @@ function Get-Answer01 {
     $d = 0
     $s = 0
     for ($i = 0; $i -lt $a.Count; $i++) {
-        $d += [math]::Abs($a[$i] - $b[$i])
-        $s += $a[$i] * ($b | Where-Object { $_ -eq $a[$i] }).Count
+        $x = $a[$i]
+        $d += [math]::Abs($x - $b[$i])
+        $s += $x * [array]::FindAll($b, [Predicate[int]] { $args[0] -eq $x }).Count
     }
 
     return $d, $s
