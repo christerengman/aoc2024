@@ -3,14 +3,14 @@ function Get-Input {
         [int]$Day
     )
 
-    $path = Join-Path $PSScriptRoot ("../input/day{0:d2}.txt" -f $Day)
+    $path = Join-Path $PSScriptRoot ("../input/{0:d2}.txt" -f $Day)
 
     return Get-Content $path
 }
 
 function Get-Answer01 {
-    $a = @()
-    $b = @()
+    [int[]] $a = @()
+    [int[]] $b = @()
 
     Get-Input -Day 1 | ForEach-Object {
         $x, $y = $_ -split ' +'
@@ -22,9 +22,11 @@ function Get-Answer01 {
     $b = $b | Sort-Object
 
     $d = 0
+    $s = 0
     for ($i = 0; $i -lt $a.Count; $i++) {
         $d += [math]::Abs($a[$i] - $b[$i])
+        $s += $a[$i] * ($b | Where-Object { $_ -eq $a[$i] }).Count
     }
 
-    $d
+    return $d, $s
 }
