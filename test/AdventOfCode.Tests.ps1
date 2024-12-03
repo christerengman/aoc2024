@@ -36,8 +36,9 @@ Describe "AdventOfCode" {
 1 3 6 7 9
 '@ -split "`n" }
 
-        $a = Get-Answer02
+        $a, $b = Get-Answer02
         $a | Should -Be 2
+        $b | Should -Be 4
       }
     }
   }

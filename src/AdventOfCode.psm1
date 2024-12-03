@@ -33,20 +33,31 @@ function Get-Answer01 {
 }
 
 function Get-Answer02 {
-    $n = 0
+    $a1 = $a2 = 0
     Get-Input -Day 2 |
     ForEach-Object {
-        $x = $_ -split ' '
-        $prevDiff = 0
-        for ($i = 1; $i -lt $x.Count; $i++) {
-            $diff = $x[$i] - $x[$i - 1]
-            if ($prevDiff * $diff -lt 0 -or $diff -eq 0 -or [Math]::Abs($diff) -gt 3 ) {
-                return
+        [System.Collections.ArrayList]$y = $_ -split ' '
+
+        :outer for ($j = -1; $j -lt $y.Count; $j++) {
+            $x = $y.Clone()
+            if ($j -ge 0) {
+                $x.RemoveAt($j)
             }
-            $prevDiff = $diff
+            $prevDiff = 0
+            for ($i = 1; $i -lt $x.Count; $i++) {
+                $diff = $x[$i] - $x[$i - 1]
+                if ($prevDiff * $diff -lt 0 -or $diff -eq 0 -or [Math]::Abs($diff) -gt 3 ) {
+                    continue outer
+                }
+                $prevDiff = $diff
+            }
+            if ($j -eq -1) {
+                $a1++
+            }
+            $a2++
+            break
         }
-        $n++
     }
 
-    return $n
+    return $a1, $a2
 }
