@@ -23,4 +23,22 @@ Describe "AdventOfCode" {
       }
     }
   }
+
+  Context "Day 2" {
+    It "Should be correct" {
+      InModuleScope $Script:ModuleName {
+        Mock Get-Input { @'
+7 6 4 2 1
+1 2 7 8 9
+9 7 6 2 1
+1 3 2 4 5
+8 6 4 4 1
+1 3 6 7 9
+'@ -split "`n" }
+
+        $a = Get-Answer02
+        $a | Should -Be 2
+      }
+    }
+  }
 }

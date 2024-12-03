@@ -31,3 +31,22 @@ function Get-Answer01 {
 
     return $d, $s
 }
+
+function Get-Answer02 {
+    $n = 0
+    Get-Input -Day 2 |
+    ForEach-Object {
+        $x = $_ -split ' '
+        $prevDiff = 0
+        for ($i = 1; $i -lt $x.Count; $i++) {
+            $diff = $x[$i] - $x[$i - 1]
+            if ($prevDiff * $diff -lt 0 -or $diff -eq 0 -or [Math]::Abs($diff) -gt 3 ) {
+                return
+            }
+            $prevDiff = $diff
+        }
+        $n++
+    }
+
+    return $n
+}
