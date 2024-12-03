@@ -61,3 +61,19 @@ function Get-Answer02 {
 
     return $a1, $a2
 }
+
+function Get-Answer03 {
+    $a1 = $a2 = 0
+    $re = [regex]::new("mul\(([0-9]+),([0-9]+)\)")
+
+    Get-Input -Day 3 |
+    ForEach-Object {
+        $re.Matches($_) | ForEach-Object {
+            $x = [int]$_.Groups[1].Value
+            $y = [int]$_.Groups[2].Value
+            $a1 += $x * $y
+        }
+    }
+
+    return $a1, $a2
+}
