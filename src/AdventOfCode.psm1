@@ -63,16 +63,23 @@ function Get-Answer02 {
 }
 
 function Get-Answer03 {
-    $a1 = $a2 = 0
-    $re = [regex]::new("mul\(([0-9]+),([0-9]+)\)")
+    $a1 = 0
+    $re1 = [regex]::new("mul\(([0-9]+),([0-9]+)\)")
 
-    Get-Input -Day 3 |
-    ForEach-Object {
-        $re.Matches($_) | ForEach-Object {
-            $x = [int]$_.Groups[1].Value
-            $y = [int]$_.Groups[2].Value
-            $a1 += $x * $y
-        }
+    $s = (Get-Input -Day 3) -join ""
+    $re1.Matches($s) | ForEach-Object {
+        $x = [int]$_.Groups[1].Value
+        $y = [int]$_.Groups[2].Value
+        $a1 += $x * $y
+    }
+
+    $a2 = 0
+    $re2 = [regex]::new("don't\(\).*?(do\(\)|$)")
+    $s2 = $re2.Replace($s, "")
+    $re1.Matches($s2) | ForEach-Object {
+        $x = [int]$_.Groups[1].Value
+        $y = [int]$_.Groups[2].Value
+        $a2 += $x * $y
     }
 
     return $a1, $a2
