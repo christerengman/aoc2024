@@ -80,8 +80,9 @@ MAMMMXMMMM
 MXMXAXMASX
 '@ -split [Environment]::NewLine }
 
-      $a = Get-Answer04
+      $a, $b = Get-Answer04
       $a | Should -Be 18
+      $b | Should -Be 9
     }
   }
 }

@@ -1,4 +1,4 @@
-function Get-Input {
+﻿function Get-Input {
   param (
     [int]$Day
   )
@@ -86,14 +86,16 @@ function Get-Answer03 {
 }
 
 function Get-Answer04 {
-  $a1 = 0
-
   $i = Get-Input -Day 4
   $sep = "[\w,]"
   $south = $i[0].Length
   $southeast = $south + 1
   $southwest = $south - 1
-  $res = @(
+
+  $s = $i -join ","
+
+  $a1 = 0
+  @(
     "XMAS" # ➡️
     "SAMX" # ⬅️
     "(?=X$sep{$south}M$sep{$south}A$sep{$south}S)" # ⬇️
@@ -102,12 +104,22 @@ function Get-Answer04 {
     "(?=S$sep{$southeast}A$sep{$southeast}M$sep{$southeast}X)" # ↖️
     "(?=X$sep{$southwest}M$sep{$southwest}A$sep{$southwest}S)" # ↙️
     "(?=S$sep{$southwest}A$sep{$southwest}M$sep{$southwest}X)" # ↗️
-  )
-
-  $s = $i -join ","
-  foreach ($re in $res) {
-    $a1 += [regex]::Matches($s, $re).Count
+  ) |
+  ForEach-Object {
+    $a1 += [regex]::Matches($s, $_).Count
   }
 
-  return $a1
+  $a2 = 0
+  @(
+    "(?=M\wM$sep{$southwest}A$sep{$southwest}S\wS)" # M M
+    "(?=S\wM$sep{$southwest}A$sep{$southwest}S\wM)" # S M
+    "(?=S\wS$sep{$southwest}A$sep{$southwest}M\wM)" # S S
+    "(?=M\wS$sep{$southwest}A$sep{$southwest}M\wS)" # M S
+  ) |
+  ForEach-Object {
+    $a2 += [regex]::Matches($s, $_).Count
+  }
+
+
+  return $a1, $a2
 }
