@@ -121,8 +121,9 @@ Context "Day 5" {
 97,13,75,29,47
 '@ -split [Environment]::NewLine }
 
-      $a = Get-Answer05
+      $a, $b = Get-Answer05
       $a | Should -Be 143
+      $b | Should -Be 123
     }
   }
 }

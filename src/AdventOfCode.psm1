@@ -125,7 +125,9 @@ function Get-Answer04 {
 }
 
 function Get-Answer05 {
+  $a1 = $a2 = 0
   $rules = @{}
+
   Get-Input -Day 5 | ForEach-Object {
     $x, $y = $_ -split '\|'
     if ($y) {
@@ -137,16 +139,28 @@ function Get-Answer05 {
         $page = $pages[$i]
         $nextPage = $pages[$i + 1]
         if ($rules[$page] -notcontains $nextPage) {
+          # Incorrect order - fix it!
+          $ordered = $pages.Clone()
+          for ($j = 0; $j -lt $ordered.Count - 1;) {
+            $p = $ordered[$j]
+            $np = $ordered[$j + 1]
+            if ($rules[$p] -notcontains $np) {
+              $t = $p
+              $ordered[$j] = $np
+              $ordered[$j + 1] = $t
+              $j = 0
+            } else {
+              $j++
+            }
+          }
+          $a2 += $ordered[($ordered.Count - 1) / 2]
+
           return
         }
       }
-      return $pages[($pages.Count - 1) / 2]
+      $a1 += $pages[($pages.Count - 1) / 2]
     }
-  } | ForEach-Object {
-    $s = 0
-  } {
-    $s += $_
-  } {
-    return $s
   }
+
+  return $a1, $a2
 }
