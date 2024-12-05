@@ -123,3 +123,30 @@ function Get-Answer04 {
 
   return $a1, $a2
 }
+
+function Get-Answer05 {
+  $rules = @{}
+  Get-Input -Day 5 | ForEach-Object {
+    $x, $y = $_ -split '\|'
+    if ($y) {
+      $rules[$x] += , $y
+    }
+    $pages = $_ -split ','
+    if ($pages.Length -gt 1) {
+      for ($i = 0; $i -lt $pages.Count - 1; $i++) {
+        $page = $pages[$i]
+        $nextPage = $pages[$i + 1]
+        if ($rules[$page] -notcontains $nextPage) {
+          return
+        }
+      }
+      return $pages[($pages.Count - 1) / 2]
+    }
+  } | ForEach-Object {
+    $s = 0
+  } {
+    $s += $_
+  } {
+    return $s
+  }
+}
