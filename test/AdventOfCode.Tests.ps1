@@ -1,12 +1,12 @@
 BeforeAll {
-  $ModuleName = "AdventOfCode"
+  $ModuleName = 'AdventOfCode'
   Import-Module $PSScriptRoot/../src/$ModuleName.psm1 -Force
 }
 
-Describe "AdventOfCode" {
+Describe 'AdventOfCode' {
 
-  Context "Day 1" {
-    It "Should be correct" {
+  Context 'Day 1' {
+    It 'Should be correct' {
       InModuleScope $ModuleName {
         Mock Get-Input { @'
 3   4
@@ -24,8 +24,8 @@ Describe "AdventOfCode" {
     }
   }
 
-  Context "Day 2" {
-    It "Should be correct" {
+  Context 'Day 2' {
+    It 'Should be correct' {
       InModuleScope $ModuleName {
         Mock Get-Input { @'
 7 6 4 2 1
@@ -43,8 +43,8 @@ Describe "AdventOfCode" {
     }
   }
 
-  Context "Day 3" {
-    It "Should be correct" {
+  Context 'Day 3' {
+    It 'Should be correct' {
       InModuleScope $ModuleName {
         Mock Get-Input { @'
 xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))
@@ -63,8 +63,8 @@ xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))
     }
   }
 
-  Context "Day 4" {
-    It "Should be correct" {
+  Context 'Day 4' {
+    It 'Should be correct' {
       InModuleScope $ModuleName {
         Mock Get-Input { @'
 MMMSXXMASM
@@ -86,8 +86,8 @@ MXMXAXMASX
     }
   }
 
-  Context "Day 5" {
-    It "Should be correct" {
+  Context 'Day 5' {
+    It 'Should be correct' {
       InModuleScope $ModuleName {
         Mock Get-Input { @'
 47|53
@@ -127,8 +127,8 @@ MXMXAXMASX
     }
   }
 
-  Context "Day 6" {
-    It "Should be correct" {
+  Context 'Day 6' {
+    It 'Should be correct' {
       InModuleScope $ModuleName {
         Mock Get-Input { @'
 ....#.....
