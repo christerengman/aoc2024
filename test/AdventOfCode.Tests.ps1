@@ -62,12 +62,11 @@ xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))
       }
     }
   }
-}
 
-Context "Day 4" {
-  It "Should be correct" {
-    InModuleScope $ModuleName {
-      Mock Get-Input { @'
+  Context "Day 4" {
+    It "Should be correct" {
+      InModuleScope $ModuleName {
+        Mock Get-Input { @'
 MMMSXXMASM
 MSAMXMSMSA
 AMXSXMAAMM
@@ -80,17 +79,17 @@ MAMMMXMMMM
 MXMXAXMASX
 '@ -split [Environment]::NewLine }
 
-      $a, $b = Get-Answer04
-      $a | Should -Be 18
-      $b | Should -Be 9
+        $a, $b = Get-Answer04
+        $a | Should -Be 18
+        $b | Should -Be 9
+      }
     }
   }
-}
 
-Context "Day 5" {
-  It "Should be correct" {
-    InModuleScope $ModuleName {
-      Mock Get-Input { @'
+  Context "Day 5" {
+    It "Should be correct" {
+      InModuleScope $ModuleName {
+        Mock Get-Input { @'
 47|53
 97|13
 97|61
@@ -121,9 +120,33 @@ Context "Day 5" {
 97,13,75,29,47
 '@ -split [Environment]::NewLine }
 
-      $a, $b = Get-Answer05
-      $a | Should -Be 143
-      $b | Should -Be 123
+        $a, $b = Get-Answer05
+        $a | Should -Be 143
+        $b | Should -Be 123
+      }
     }
   }
+
+  Context "Day 6" {
+    It "Should be correct" {
+      InModuleScope $ModuleName {
+        Mock Get-Input { @'
+....#.....
+.........#
+..........
+..#.......
+.......#..
+..........
+.#..^.....
+........#.
+#.........
+......#...
+'@ -split [Environment]::NewLine }
+
+        $a = Get-Answer06
+        $a | Should -Be 41
+      }
+    }
+  }
+
 }

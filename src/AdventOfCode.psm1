@@ -3,7 +3,7 @@
     [int]$Day
   )
 
-  $path = Join-Path $PSScriptRoot ("../input/{0:d2}.txt" -f $Day)
+  $path = Join-Path $PSScriptRoot ('../input/{0:d2}.txt' -f $Day)
 
   return Get-Content $path
 }
@@ -64,9 +64,9 @@ function Get-Answer02 {
 
 function Get-Answer03 {
   $a1 = 0
-  $re1 = [regex]::new("mul\(([0-9]+),([0-9]+)\)")
+  $re1 = [regex]::new('mul\(([0-9]+),([0-9]+)\)')
 
-  $s = (Get-Input -Day 3) -join ""
+  $s = (Get-Input -Day 3) -join ''
   $re1.Matches($s) | ForEach-Object {
     $x = [int]$_.Groups[1].Value
     $y = [int]$_.Groups[2].Value
@@ -75,7 +75,7 @@ function Get-Answer03 {
 
   $a2 = 0
   $re2 = [regex]::new("don't\(\).*?(do\(\)|$)")
-  $s2 = $re2.Replace($s, "")
+  $s2 = $re2.Replace($s, '')
   $re1.Matches($s2) | ForEach-Object {
     $x = [int]$_.Groups[1].Value
     $y = [int]$_.Groups[2].Value
@@ -87,17 +87,17 @@ function Get-Answer03 {
 
 function Get-Answer04 {
   $i = Get-Input -Day 4
-  $sep = "[\w,]"
+  $sep = '[\w,]'
   $south = $i[0].Length
   $southeast = $south + 1
   $southwest = $south - 1
 
-  $s = $i -join ","
+  $s = $i -join ','
 
   $a1 = 0
   @(
-    "XMAS" # ➡️
-    "SAMX" # ⬅️
+    'XMAS' # ➡️
+    'SAMX' # ⬅️
     "(?=X$sep{$south}M$sep{$south}A$sep{$south}S)" # ⬇️
     "(?=S$sep{$south}A$sep{$south}M$sep{$south}X)" # ⬆️
     "(?=X$sep{$southeast}M$sep{$southeast}A$sep{$southeast}S)" # ↘️
@@ -141,7 +141,7 @@ function Get-Answer05 {
         if ($rules[$page] -notcontains $nextPage) {
           # Incorrect order - fix it!
           $ordered = $pages.Clone()
-          for ($j = 0; $j -lt $ordered.Count - 1;) {
+          for ($j = 0; $j -lt $ordered.Count - 1; ) {
             $p = $ordered[$j]
             $np = $ordered[$j + 1]
             if ($rules[$p] -notcontains $np) {
@@ -149,7 +149,8 @@ function Get-Answer05 {
               $ordered[$j] = $np
               $ordered[$j + 1] = $t
               $j = 0
-            } else {
+            }
+            else {
               $j++
             }
           }
@@ -163,4 +164,46 @@ function Get-Answer05 {
   }
 
   return $a1, $a2
+}
+
+function Get-Answer06 {
+  $data = Get-Input -Day 6
+  $width = $data[0].Length
+  $wall = '|'
+  $board = ($data -join $wall).ToCharArray()
+  $dirs = [ordered]@{
+    '^' = -($width + $wall.Length)
+    '>' = 1
+    'v' = $width + $wall.Length
+    '<' = -1
+  }
+  $player = [regex]::new('[\^>v<]')
+  while ($true) {
+    $pos = $player.Match([string]::new($board))
+    $index = $pos.Index
+    $dir = $pos.Value
+    $newIndex = $index + $dirs[$dir]
+
+    # Stop if leaving the board
+    if ($board[$newIndex] -eq $wall -or $newIndex -lt 0 -or $newIndex -ge $board.Length) {
+      $board[$index] = "X"
+      break
+    }
+
+    # Turn on obstruction
+    if ($board[$newIndex] -eq '#') {
+      $newDir = $dirs.Keys[($dirs.Keys.IndexOf($dir) + 1) % 4]
+      $board[$index] = $newDir
+
+      continue
+    }
+
+    # Move
+    $board[$index + $dirs[$dir]] = $dir
+
+    # Track
+    $board[$index] = "X"
+  }
+
+  return ($board | Group-Object | Where-Object Name -eq "X").Count
 }
