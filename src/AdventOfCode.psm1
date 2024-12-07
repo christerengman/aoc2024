@@ -170,40 +170,70 @@ function Get-Answer06 {
   $data = Get-Input -Day 6
   $width = $data[0].Length
   $wall = '|'
-  $board = ($data -join $wall).ToCharArray()
+  $track = 'X'
+  $obstruction = '#'
   $dirs = [ordered]@{
-    '^' = -($width + $wall.Length)
+    '^' = - ($width + $wall.Length)
     '>' = 1
     'v' = $width + $wall.Length
     '<' = -1
   }
   $player = [regex]::new('[\^>v<]')
-  while ($true) {
+
+  $a2 = 0
+  for ($i = -1; $i -lt $board.Length; $i++) {
+    $board = ($data -join $wall).ToCharArray()
+    $history = [char[]]::new($board.Length)
+
+    if ($i -gt -1) {
+      Write-Progress -Activity 'Day06' -PercentComplete ([math]::Round((($i + 1) * 100 / $board.Length)))
+      if ($board[$i] -in ($dirs.Keys + $wall + $obstruction)) {
+        continue
+      }
+      $board[$i] = $obstruction
+    }
+
     $pos = $player.Match([string]::new($board))
     $index = $pos.Index
     $dir = $pos.Value
-    $newIndex = $index + $dirs[$dir]
+    while ($true) {
+      $newIndex = $index + $dirs[$dir]
 
-    # Stop if leaving the board
-    if ($board[$newIndex] -eq $wall -or $newIndex -lt 0 -or $newIndex -ge $board.Length) {
-      $board[$index] = "X"
-      break
+      # Stop if caught in a loop
+      if ($history[$index] -eq $dir) {
+        $a2++
+
+        break
+      }
+
+      # Stop if leaving the board
+      if ($board[$newIndex] -eq $wall -or $newIndex -lt 0 -or $newIndex -ge $board.Length) {
+        $board[$index] = $track
+        break
+      }
+
+      # Turn on obstruction
+      if ($board[$newIndex] -eq $obstruction) {
+        $newDir = $dirs.Keys[($dirs.Keys.IndexOf($dir) + 1) % 4]
+        $board[$index] = $newDir
+        $dir = $newDir
+
+        continue
+      }
+
+      # Move
+      $board[$newIndex] = $dir
+
+      # Track
+      $board[$index] = $track
+      $history[$index] = $dir
+
+      $index = $newIndex
     }
-
-    # Turn on obstruction
-    if ($board[$newIndex] -eq '#') {
-      $newDir = $dirs.Keys[($dirs.Keys.IndexOf($dir) + 1) % 4]
-      $board[$index] = $newDir
-
-      continue
+    if ($i -eq -1) {
+      $a1 = ($board | Group-Object | Where-Object Name -eq $track).Count
     }
-
-    # Move
-    $board[$index + $dirs[$dir]] = $dir
-
-    # Track
-    $board[$index] = "X"
   }
 
-  return ($board | Group-Object | Where-Object Name -eq "X").Count
+  return $a1, $a2
 }

@@ -143,8 +143,9 @@ MXMXAXMASX
 ......#...
 '@ -split [Environment]::NewLine }
 
-        $a = Get-Answer06
+        $a, $b = Get-Answer06
         $a | Should -Be 41
+        $b | Should -Be 6
       }
     }
   }
