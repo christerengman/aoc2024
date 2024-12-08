@@ -94,34 +94,28 @@ function Get-Answer04 {
 
   $s = $i -join ','
 
-  $a1 = 0
-  @(
-    'XMAS' # ➡️
-    'SAMX' # ⬅️
-    "(?=X$sep{$south}M$sep{$south}A$sep{$south}S)" # ⬇️
-    "(?=S$sep{$south}A$sep{$south}M$sep{$south}X)" # ⬆️
-    "(?=X$sep{$southeast}M$sep{$southeast}A$sep{$southeast}S)" # ↘️
-    "(?=S$sep{$southeast}A$sep{$southeast}M$sep{$southeast}X)" # ↖️
-    "(?=X$sep{$southwest}M$sep{$southwest}A$sep{$southwest}S)" # ↙️
-    "(?=S$sep{$southwest}A$sep{$southwest}M$sep{$southwest}X)" # ↗️
-  ) |
-  ForEach-Object {
-    $a1 += [regex]::Matches($s, $_).Count
-  }
-
-  $a2 = 0
-  @(
-    "(?=M\wM$sep{$southwest}A$sep{$southwest}S\wS)" # M M
-    "(?=S\wM$sep{$southwest}A$sep{$southwest}S\wM)" # S M
-    "(?=S\wS$sep{$southwest}A$sep{$southwest}M\wM)" # S S
-    "(?=M\wS$sep{$southwest}A$sep{$southwest}M\wS)" # M S
-  ) |
-  ForEach-Object {
-    $a2 += [regex]::Matches($s, $_).Count
-  }
-
-
-  return $a1, $a2
+  return (
+    (
+      @(
+        'XMAS' # ➡️
+        'SAMX' # ⬅️
+        "(?=X$sep{$south}M$sep{$south}A$sep{$south}S)" # ⬇️
+        "(?=S$sep{$south}A$sep{$south}M$sep{$south}X)" # ⬆️
+        "(?=X$sep{$southeast}M$sep{$southeast}A$sep{$southeast}S)" # ↘️
+        "(?=S$sep{$southeast}A$sep{$southeast}M$sep{$southeast}X)" # ↖️
+        "(?=X$sep{$southwest}M$sep{$southwest}A$sep{$southwest}S)" # ↙️
+        "(?=S$sep{$southwest}A$sep{$southwest}M$sep{$southwest}X)" # ↗️
+      ) | ForEach-Object { [regex]::Matches($s, $_).Count } | Measure-Object -Sum | Select-Object -ExpandProperty Sum
+    ),
+    (
+      @(
+        "(?=M\wM$sep{$southwest}A$sep{$southwest}S\wS)" # M M
+        "(?=S\wM$sep{$southwest}A$sep{$southwest}S\wM)" # S M
+        "(?=S\wS$sep{$southwest}A$sep{$southwest}M\wM)" # S S
+        "(?=M\wS$sep{$southwest}A$sep{$southwest}M\wS)" # M S
+      ) | ForEach-Object { [regex]::Matches($s, $_).Count } | Measure-Object -Sum | Select-Object -ExpandProperty Sum
+    )
+  )
 }
 
 function Get-Answer05 {
@@ -306,12 +300,14 @@ function Get-Answer08 {
 
   $antennas = [regex]::new('\w').Matches($map)
 
+  # Loop through all antennas
   foreach ($a in $antennas) {
     $f = $a.Value
     $i = $a.Index
     $x1 = $i % $width
     $y1 = [math]::Truncate($i / $width)
 
+    # Find matching antennas with same frequency
     foreach ($b in $antennas.Where({ $_.Value -ceq $f -and $_.Index -ne $i })) {
       $j = $b.Index
       $x2 = $j % $width
@@ -320,6 +316,7 @@ function Get-Answer08 {
       $dx = $x2 - $x1
       $dy = $y2 - $y1
 
+      # Find all antinodes on the line between the antennas (in one direction)
       $n = 0;
       $isOnMap = $true
       do {
