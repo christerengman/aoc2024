@@ -237,3 +237,46 @@ function Get-Answer06 {
 
   return $a1, $a2
 }
+
+function Get-Answer07 {
+  $ops = '*', '+'
+
+  function Find-Result {
+    param (
+      [decimal]$result,
+      [decimal[]]$numbers,
+      [decimal]$expected
+    )
+
+    if ($numbers.Length -eq 0) {
+      if ($result -eq $expected) {
+        return $result
+      }
+      else {
+        return
+      }
+    }
+
+    $first, $rest = $numbers
+
+    switch ($ops) {
+      '*' { Find-Result ($result * $first) $rest $expected }
+      '+' { Find-Result ($result + $first) $rest $expected }
+    }
+  }
+
+  Get-Input -Day 7 |
+  ForEach-Object -PipelineVariable row {
+    $testValue, $numStr = $_ -split ': '
+    [PSCustomObject]@{
+      TestValue = [decimal] $testValue
+      Numbers   = ($numStr -split ' ').ForEach({ [decimal] $_ })
+    }
+  } |
+  ForEach-Object {
+    $first, $rest = $_.Numbers
+    Find-Result $first $rest $_.TestValue | Select-Object -Unique
+  } |
+  Measure-Object -Sum |
+  Select-Object -ExpandProperty Sum
+}
