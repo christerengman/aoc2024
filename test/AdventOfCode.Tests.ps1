@@ -150,7 +150,7 @@ MXMXAXMASX
     }
   }
 
-  Context 'Day 6' {
+  Context 'Day 7' {
     It 'Should be correct' {
       InModuleScope $ModuleName {
         Mock Get-Input { @'
@@ -172,7 +172,7 @@ MXMXAXMASX
     }
   }
 
-  Context 'Day 7' {
+  Context 'Day 8' {
     It 'Should be correct' {
       InModuleScope $ModuleName {
         Mock Get-Input { @'
@@ -192,7 +192,7 @@ MXMXAXMASX
 
         $a, $b = Get-Answer08
         $a | Should -Be 14
-        $b | Should -Be $null
+        $b | Should -Be 34
       }
     }
   }

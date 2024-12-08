@@ -186,7 +186,6 @@ function Get-Answer06 {
     $history = [char[]]::new($board.Length)
 
     if ($i -gt -1) {
-      Write-Progress -Activity 'Day06' -PercentComplete ([math]::Round((($i + 1) * 100 / $board.Length)))
       if ($board[$i] -in ($dirs.Keys + $wall + $obstruction)) {
         continue
       }
@@ -302,7 +301,8 @@ function Get-Answer08 {
   $lines = Get-Input -Day 8
   $width = $lines[0].Length
   $map = $lines -join ''
-  $nodes = , '.' * $map.Length
+  $nodes1 = , '.' * $map.Length
+  $nodes2 = , '.' * $map.Length
 
   $antennas = [regex]::new('\w').Matches($map)
 
@@ -320,16 +320,31 @@ function Get-Answer08 {
       $dx = $x2 - $x1
       $dy = $y2 - $y1
 
-      $x3 = $x1 + 2 * $dx
-      $y3 = $y1 + 2 * $dy
+      $n = 0;
+      $isOnMap = $true
+      do {
+        $x3 = $x1 + $n * $dx
+        $y3 = $y1 + $n * $dy
 
-      if ($x3 -ge 0 -and $x3 -lt $width -and $y3 -ge 0 -and $y3 -lt $width) {
-        $k = $y3 * $width + $x3
-        $nodes[$k] = '#'
-      }
+        if ($x3 -ge 0 -and $x3 -lt $width -and $y3 -ge 0 -and $y3 -lt $width) {
+          $k = $y3 * $width + $x3
+          if ($n -eq 2) {
+            $nodes1[$k] = '#'
+          }
+
+          $nodes2[$k] = '#'
+        }
+        else {
+          $isOnMap = $false
+        }
+        $n++;
+      } while ($isOnMap)
     }
 
   }
 
-  return $nodes.Where({ $_ -eq '#' }).Count
+  return (
+    $nodes1.Where({ $_ -eq '#' }).Count,
+    $nodes2.Where({ $_ -eq '#' }).Count
+  )
 }
