@@ -297,3 +297,39 @@ function Get-Answer07 {
   Measure-Object -Sum -Property A, B |
   Select-Object -ExpandProperty Sum
 }
+
+function Get-Answer08 {
+  $lines = Get-Input -Day 8
+  $width = $lines[0].Length
+  $map = $lines -join ''
+  $nodes = , '.' * $map.Length
+
+  $antennas = [regex]::new('\w').Matches($map)
+
+  foreach ($a in $antennas) {
+    $f = $a.Value
+    $i = $a.Index
+    $x1 = $i % $width
+    $y1 = [math]::Truncate($i / $width)
+
+    foreach ($b in $antennas.Where({ $_.Value -ceq $f -and $_.Index -ne $i })) {
+      $j = $b.Index
+      $x2 = $j % $width
+      $y2 = [math]::Truncate($j / $width)
+
+      $dx = $x2 - $x1
+      $dy = $y2 - $y1
+
+      $x3 = $x1 + 2 * $dx
+      $y3 = $y1 + 2 * $dy
+
+      if ($x3 -ge 0 -and $x3 -lt $width -and $y3 -ge 0 -and $y3 -lt $width) {
+        $k = $y3 * $width + $x3
+        $nodes[$k] = '#'
+      }
+    }
+
+  }
+
+  return $nodes.Where({ $_ -eq '#' }).Count
+}
