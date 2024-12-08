@@ -248,6 +248,10 @@ function Get-Answer07 {
       [decimal]$expected
     )
 
+    if ($result -gt $expected) {
+      return
+    }
+
     if ($numbers.Length -eq 0) {
       if ($result -eq $expected) {
         return $result
@@ -282,12 +286,12 @@ function Get-Answer07 {
       Numbers   = ($numStr -split ' ').ForEach({ [decimal] $_ })
     }
   } |
-  ForEach-Object -ThrottleLimit 100 -Parallel {
+  ForEach-Object -ThrottleLimit 1000 -Parallel {
     ${function:Find-Result} = $using:funcDef
     $first, $rest = $_.Numbers
     [PSCustomObject]@{
       A = Find-Result -result $first -numbers $rest -ops @('*', '+') -expected $_.TestValue | Select-Object -Unique
-      B = Find-Result -result $first -numbers $rest -ops @('+', '*', '||') -expected $_.TestValue | Select-Object -Unique
+      B = Find-Result -result $first -numbers $rest -ops @('*', '+', '||') -expected $_.TestValue | Select-Object -Unique
     }
   } |
   Measure-Object -Sum -Property A, B |
