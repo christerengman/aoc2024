@@ -239,12 +239,12 @@ function Get-Answer06 {
 }
 
 function Get-Answer07 {
-  $ops = '*', '+'
 
   function Find-Result {
     param (
       [decimal]$result,
       [decimal[]]$numbers,
+      [string[]]$ops,
       [decimal]$expected
     )
 
@@ -259,24 +259,37 @@ function Get-Answer07 {
 
     $first, $rest = $numbers
 
+    $params = @{
+      numbers  = $rest
+      ops      = $ops
+      expected = $expected
+    }
+
     switch ($ops) {
-      '*' { Find-Result ($result * $first) $rest $expected }
-      '+' { Find-Result ($result + $first) $rest $expected }
+      '*' { Find-Result @params -result ($result * $first) }
+      '+' { Find-Result @params -result ($result + $first) }
+      '||' { Find-Result @params -result ([decimal]"$result$first") }
     }
   }
 
+  $funcDef = ${function:Find-Result}.ToString()
+
   Get-Input -Day 7 |
-  ForEach-Object -PipelineVariable row {
+  ForEach-Object {
     $testValue, $numStr = $_ -split ': '
     [PSCustomObject]@{
       TestValue = [decimal] $testValue
       Numbers   = ($numStr -split ' ').ForEach({ [decimal] $_ })
     }
   } |
-  ForEach-Object {
+  ForEach-Object -ThrottleLimit 100 -Parallel {
+    ${function:Find-Result} = $using:funcDef
     $first, $rest = $_.Numbers
-    Find-Result $first $rest $_.TestValue | Select-Object -Unique
+    [PSCustomObject]@{
+      A = Find-Result -result $first -numbers $rest -ops @('*', '+') -expected $_.TestValue | Select-Object -Unique
+      B = Find-Result -result $first -numbers $rest -ops @('+', '*', '||') -expected $_.TestValue | Select-Object -Unique
+    }
   } |
-  Measure-Object -Sum |
+  Measure-Object -Sum -Property A, B |
   Select-Object -ExpandProperty Sum
 }

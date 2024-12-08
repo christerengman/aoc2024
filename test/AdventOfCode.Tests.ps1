@@ -167,7 +167,7 @@ MXMXAXMASX
 
         $a, $b = Get-Answer07
         $a | Should -Be 3749
-        $b | Should -Be $null
+        $b | Should -Be 11387
       }
     }
   }
