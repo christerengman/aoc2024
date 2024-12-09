@@ -337,11 +337,37 @@ function Get-Answer08 {
         $n++;
       } while ($isOnMap)
     }
-
   }
 
   return (
     $nodes1.Where({ $_ -eq '#' }).Count,
     $nodes2.Where({ $_ -eq '#' }).Count
   )
+}
+
+function Get-Answer09 {
+  $map = Get-Input -Day 9
+  $blocks = $map -split '(\d)' -ne '' | ForEach-Object { $Script:i = 0 } { , ($i % 2 -eq 0 ? $i / 2 : '.') * [int]$_; $i++ }
+
+  for ($i = $blocks.Count - 1; $i -ge 0; $i--) {
+    $j = [array]::IndexOf($blocks, '.')
+    if ($j -gt $i) {
+      break
+    }
+
+    # Move
+    $block = $blocks[$i]
+    $blocks[$i] = '.'
+    $blocks[$j] = $block
+  }
+
+  $checksum = 0
+  for ($i = 0; $i -lt $blocks.Count; $i++) {
+    if ($blocks[$i] -eq '.') {
+      continue
+    }
+    $checksum += $i * $blocks[$i]
+  }
+
+  return $checksum
 }

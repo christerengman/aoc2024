@@ -196,4 +196,18 @@ MXMXAXMASX
       }
     }
   }
+
+  Context 'Day 9' {
+    It 'Should be correct' {
+      InModuleScope $ModuleName {
+        Mock Get-Input { @'
+2333133121414131402
+'@ -split [Environment]::NewLine }
+
+        $a, $b = Get-Answer09
+        $a | Should -Be 1928
+        $b | Should -Be $null
+      }
+    }
+  }
 }
